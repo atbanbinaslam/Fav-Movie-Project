@@ -5,6 +5,7 @@ const cancelBtn = document.querySelector('body button');
 const addBtn = document.querySelector('.btn--success');
 const inputValues = addmodal.querySelectorAll('input');
 const noneEntrydisplay = document.getElementById('entry-text');
+const deleteModal = document.getElementById('delete-modal');
 
 const movies = [];
 
@@ -30,7 +31,7 @@ const clearUI = () => {
     }
 };
 
-const deletionFuction = (newMovieID) => {
+const deletionModal = (newMovieID) => {
     let movieIndex = 0;
     for (const movie of movies) {
         if (movie.movieID === newMovieID){
@@ -41,6 +42,19 @@ const deletionFuction = (newMovieID) => {
     movies.splice(movieIndex, 1);
     const unorderedlist = document.getElementById('movie-list');
     unorderedlist.children[movieIndex].remove();
+};
+
+const cancelDeleteModal = () => {
+    deleteModal.classList.toggle('visible');
+    togglebackdrop();
+};
+
+const deletionFuction = (newMovieID) => {
+    deleteModal.classList.toggle('visible');
+    togglebackdrop();
+    const confirm = deleteModal.lastElementChild.firstElementChild;
+    deleteModal.addEventListener('click', cancelDeleteModal);
+    deleteModal.addEventListener('click', deletionModal(newMovieID));
 };
 
 const newMovieEntryDisplay = (ID, newMovieTile, newMovieImg, newMovieRaing) => {
