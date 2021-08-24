@@ -54,7 +54,7 @@ const deletionFuction = (newMovieID) => {
     togglebackdrop();
     const confirm = deleteModal.lastElementChild.firstElementChild;
     deleteModal.addEventListener('click', cancelDeleteModal);
-    deleteModal.addEventListener('click', deletionModal(newMovieID));
+    deleteModal.addEventListener('click', deletionModal.bind(null, newMovieID));
 };
 
 const newMovieEntryDisplay = (ID, newMovieTile, newMovieImg, newMovieRaing) => {
