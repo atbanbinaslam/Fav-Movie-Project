@@ -9,13 +9,6 @@ const deleteModal = document.getElementById('delete-modal');
 
 const movies = [];
 
-const inputTitle = inputValues[0].value;
-const inputImageURL = inputValues[1].value;
-const inputRating = inputValues[2].value;
-let moviesObject;
-moviesObject = { id: (Math.random() * 100000).toFixed(0), movieTitle: inputTitle, movieImageURL: inputImageURL, movieRating: inputRating };
-const moviesObjectId = moviesObject.id;
-
 // let someval = true;
 
 // // const toggleMovieModal = () => {
@@ -38,19 +31,22 @@ const clearUI = () => {
     }
 };
 
-const deletionFunction = (moviesObjectId) => {
-    let movieIndex = -1;
+const deletionModal = (movieID) => {
+    let movieIndex = 0;
     for (const movie of movies) {
-        if (movie.id === moviesObjectId) {
+        if (movie.id === movieID) {
             break;
         }
         movieIndex++;
     }
     movies.splice(movieIndex, 1);
-    const listRoot = document.getElementById('movie-list');
-    listRoot.children[movieIndex].remove();
+    const movieList = document.getElementById('movie-list');
+    // console.log(movieID, movieIndex, movies, movieList);
+    movieList.children[movieIndex].remove();
     deleteModal.classList.toggle('visible');
     togglebackdrop();
+    clearUI();
+
     // const index = movies.indexOf(movieID.toString());
     // let index = -1;
     // movies.forEach((movie, tempIndex) => {
@@ -67,17 +63,24 @@ const deletionFunction = (moviesObjectId) => {
 const cancelDeleteModal = () => {
     deleteModal.classList.toggle('visible');
     togglebackdrop();
+    clearUI();
 };
 
-const deletionFuction = () => {
+const deletionFuction = (newMovieID) => {
     deleteModal.classList.toggle('visible');
     togglebackdrop();
     const cancel = deleteModal.lastElementChild.firstElementChild;
-    cancel.addEventListener('click', cancelDeleteModal);
-    const confirm = deleteModal.lastElementChild.lastElementChild;
-    confirm.addEventListener('click', deletionFunction);
-}
+    let confirm = deleteModal.lastElementChild.lastElementChild;
+    // console.log(cancel, confirm);
+    confirm.replaceWith(confirm.cloneNode(true));
+    confirm = deleteModal.lastElementChild.lastElementChild;
 
+    cancel.removeEventListener('click',cancelDeleteModal);
+
+    cancel.addEventListener('click', cancelDeleteModal);
+    confirm.addEventListener('click', deletionModal.bind(null, newMovieID));
+
+};
 
 const newMovieEntryDisplay = (id, newMovieTile, newMovieImg, newMovieRaing) => {
     const movieEntryDisplay = document.createElement('li');
@@ -91,19 +94,22 @@ const newMovieEntryDisplay = (id, newMovieTile, newMovieImg, newMovieRaing) => {
     <p>${newMovieRaing}/5 stars</p>
     </div>
     `;
-    movieEntryDisplay.addEventListener('click', deletionFuction);
+    movieEntryDisplay.addEventListener('click', deletionFuction.bind(null, id));
     const unorderedlist = document.getElementById('movie-list');
     unorderedlist.append(movieEntryDisplay);
 };
 
 const addBtnEvent = () => {
+    const inputTitle = inputValues[0].value;
+    const inputImageURL = inputValues[1].value;
+    const inputRating = inputValues[2].value;
 
+    if (inputTitle.trim() === '' || inputImageURL.trim() === '' || inputRating.trim() === '' || +inputRating < 0 || +inputRating > 5) {
+        alert('enter valid input');
+        return;
+    }
 
-    // if (inputTitle.trim() === '' || inputImageURL.trim() === '' || inputRating.trim() === '' || +inputRating < 0 || +inputRating > 5) {
-    //     alert('enter valid input');
-    //     return;
-    // }
-
+    let moviesObject = { id: (Math.random() * 100000).toFixed(0), movieTitle: inputTitle, movieImageURL: inputImageURL, movieRating: inputRating };
     movies.push(moviesObject);
     console.log(movies);
     toggleMovieModal();
