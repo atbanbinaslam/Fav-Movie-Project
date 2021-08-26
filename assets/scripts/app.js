@@ -9,6 +9,13 @@ const deleteModal = document.getElementById('delete-modal');
 
 const movies = [];
 
+const inputTitle = inputValues[0].value;
+const inputImageURL = inputValues[1].value;
+const inputRating = inputValues[2].value;
+let moviesObject;
+moviesObject = { id: (Math.random() * 100000).toFixed(0), movieTitle: inputTitle, movieImageURL: inputImageURL, movieRating: inputRating };
+const moviesObjectId = moviesObject.id;
+
 // let someval = true;
 
 // // const toggleMovieModal = () => {
@@ -31,17 +38,30 @@ const clearUI = () => {
     }
 };
 
-const deletionModal = (newMovieID) => {
-    let movieIndex = 0;
+const deletionFunction = (moviesObjectId) => {
+    let movieIndex = -1;
     for (const movie of movies) {
-        if (movie.movieID === newMovieID){
-        break;
+        if (movie.id === moviesObjectId) {
+            break;
         }
         movieIndex++;
     }
     movies.splice(movieIndex, 1);
-    const unorderedlist = document.getElementById('movie-list');
-    unorderedlist.children[movieIndex].remove();
+    const listRoot = document.getElementById('movie-list');
+    listRoot.children[movieIndex].remove();
+    deleteModal.classList.toggle('visible');
+    togglebackdrop();
+    // const index = movies.indexOf(movieID.toString());
+    // let index = -1;
+    // movies.forEach((movie, tempIndex) => {
+    //     if (movie.id.toString() === movieID.toString())
+    //         index = tempIndex;
+    // });
+    // movies.splice(index, 1);
+    // const movieList = document.getElementById('movie-list');
+    // console.log(movieID, index, movies, movieList);
+    // movieList.children[index].remove();
+
 };
 
 const cancelDeleteModal = () => {
@@ -49,15 +69,17 @@ const cancelDeleteModal = () => {
     togglebackdrop();
 };
 
-const deletionFuction = (newMovieID) => {
+const deletionFuction = () => {
     deleteModal.classList.toggle('visible');
     togglebackdrop();
-    const confirm = deleteModal.lastElementChild.firstElementChild;
-    deleteModal.addEventListener('click', cancelDeleteModal);
-    deleteModal.addEventListener('click', deletionModal.bind(null, newMovieID));
-};
+    const cancel = deleteModal.lastElementChild.firstElementChild;
+    cancel.addEventListener('click', cancelDeleteModal);
+    const confirm = deleteModal.lastElementChild.lastElementChild;
+    confirm.addEventListener('click', deletionFunction);
+}
 
-const newMovieEntryDisplay = (ID, newMovieTile, newMovieImg, newMovieRaing) => {
+
+const newMovieEntryDisplay = (id, newMovieTile, newMovieImg, newMovieRaing) => {
     const movieEntryDisplay = document.createElement('li');
     movieEntryDisplay.className = 'movie-element';
     movieEntryDisplay.innerHTML = `
@@ -69,26 +91,23 @@ const newMovieEntryDisplay = (ID, newMovieTile, newMovieImg, newMovieRaing) => {
     <p>${newMovieRaing}/5 stars</p>
     </div>
     `;
+    movieEntryDisplay.addEventListener('click', deletionFuction);
     const unorderedlist = document.getElementById('movie-list');
     unorderedlist.append(movieEntryDisplay);
-    movieEntryDisplay.addEventListener('click', deletionFuction.bind(null, ID));
 };
 
 const addBtnEvent = () => {
-    const inputTitle = inputValues[0].value;
-    const inputImageURL = inputValues[1].value;
-    const inputRating = inputValues[2].value;
 
-    if (inputTitle.trim() === '' || inputImageURL.trim() === '' || inputRating.trim() === '' || +inputRating < 0 || +inputRating > 5) {
-        alert('enter valid input');
-        return;
-    }
 
-    let moviesObject = { movieID: Math.random(), movieTitle: inputTitle, movieImageURL: inputImageURL, movieRating: inputRating };
+    // if (inputTitle.trim() === '' || inputImageURL.trim() === '' || inputRating.trim() === '' || +inputRating < 0 || +inputRating > 5) {
+    //     alert('enter valid input');
+    //     return;
+    // }
+
     movies.push(moviesObject);
     console.log(movies);
     toggleMovieModal();
-    newMovieEntryDisplay(moviesObject.movieID, moviesObject.movieTitle, moviesObject.movieImageURL, moviesObject.movieRating);
+    newMovieEntryDisplay(moviesObject.id, moviesObject.movieTitle, moviesObject.movieImageURL, moviesObject.movieRating);
     clearUI();
 };
 
